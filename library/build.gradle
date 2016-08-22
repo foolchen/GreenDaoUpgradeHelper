@@ -1,55 +1,53 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+  compileSdkVersion 24
+  buildToolsVersion "24.0.1"
 
-    defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 23
-        versionCode 5
-        versionName "0.0.5"
+  defaultConfig {
+    minSdkVersion 9
+    targetSdkVersion 24
+    versionCode 6
+    versionName "3.0"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+  }
 }
 
 dependencies {
-    compile 'de.greenrobot:greendao:2.0.0'
-    compile 'com.android.support:appcompat-v7:23.1.1'
+  compile 'org.greenrobot:greendao:3.1.0'
+  compile 'com.android.support:appcompat-v7:24.2.0'
 }
-
 
 //dependsOn 可根据实际需要增加或更改
 task buildJar(type: Jar) {
+  appendix = ""
+  baseName = "greendao-upgrade"
+  version = "3.0.0"
+  classifier = "release"
 
-    appendix = ""
-    baseName = "greendao-upgrade"
-    version = "0.0.5"
-    classifier = "release"
+  //后缀名
+  extension = "jar"
+  //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
+  //    archiveName = "AndroidJarDemo.jar"
 
-    //后缀名
-    extension = "jar"
-    //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
-//    archiveName = "AndroidJarDemo.jar"
+  //需打包的资源所在的路径集
+  def srcClassDir = [project.buildDir.absolutePath + "/intermediates/classes/release"];
+  //初始化资源路径集
+  from srcClassDir
 
-    //需打包的资源所在的路径集
-    def srcClassDir = [project.buildDir.absolutePath + "/intermediates/classes/release"];
-    //初始化资源路径集
-    from srcClassDir
+  //去除路径集下部分的资源
+  exclude "com/github/yuweiguocn/library/greendao/BuildConfig.class"
+  exclude "com/github/yuweiguocn/library/greendao/BuildConfig\$*.class"
+  exclude "**/R.class"
+  exclude "**/R\$*.class"
 
-    //去除路径集下部分的资源
-    exclude "com/github/yuweiguocn/library/greendao/BuildConfig.class"
-    exclude "com/github/yuweiguocn/library/greendao/BuildConfig\$*.class"
-    exclude "**/R.class"
-    exclude "**/R\$*.class"
+  //只导入资源路径集下的部分资源
+  include "com/github/yuweiguocn/library/greendao/**/*.class"
 
-    //只导入资源路径集下的部分资源
-    include "com/github/yuweiguocn/library/greendao/**/*.class"
-
-    //注: exclude include 支持可变长参数
+  //注: exclude include 支持可变长参数
 }
